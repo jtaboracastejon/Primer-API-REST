@@ -40,7 +40,7 @@ exports.EjemploPost = (req, res) => {
     res.json(msj.mensaje);
 }
 exports.EjemploPut = (req, res) => {
-    console.log(req)
+    // console.log(req)
     const {id}=req.query;
     // const {usuario, contrasena} = req.body;
     const validaciones = validationResult(req);
@@ -56,6 +56,26 @@ exports.EjemploPut = (req, res) => {
     };
 
     if(!usuario2 || !contrasena2){
+        msj.mensaje='Debe enviar los datos completos';
+    }else{
+        msj.mensaje='Peticion procesada correctamente';
+    }
+
+    res.json(msj.mensaje);
+}
+
+exports.EjemploDelete = (req, res) => {
+    // console.log(req)
+    const {id}=req.query;
+    // const {usuario, contrasena} = req.body;
+    const validaciones = validationResult(req);
+    console.log(validaciones.errors);
+
+    const msj = {
+        mensaje: 'Ninguno'
+    };
+
+    if(!id){
         msj.mensaje='Debe enviar los datos completos';
     }else{
         msj.mensaje='Peticion procesada correctamente';
