@@ -1,3 +1,5 @@
+const {validationResult} = require('express-validator'); //Esta variable contiene los mensajes de error que 
+                                                        //se pueden producir al validar los datos en index.js
 exports.Inicio = (req, res) => {
     const listaModulos=[
         {modulo:"empleados",ruta:"/api/empleados"},
@@ -18,6 +20,8 @@ exports.Inicio = (req, res) => {
 
 exports.EjemploPost = (req, res) => {
     // const {usuario, contrasena} = req.body;
+    const validaciones = validationResult(req);
+    console.log(validaciones.errors);
     const usuario2 = req.body.usuario;
     const contrasena2 = req.body.contrasena;
     console.log(usuario2);
@@ -39,6 +43,8 @@ exports.EjemploPut = (req, res) => {
     console.log(req)
     const {id}=req.query;
     // const {usuario, contrasena} = req.body;
+    const validaciones = validationResult(req);
+    console.log(validaciones.errors);
     const usuario2 = req.body.usuario;
     const contrasena2 = req.body.contrasena;
     console.log(id);
