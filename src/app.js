@@ -12,6 +12,7 @@ app.use(express.json());
 }); 
 *Lo pasamos al directorio de rutas*/ 
 app.use('/api',require('./rutas'));
+app.use('/api/cargos',require('./rutas/rutasCargos'));
 
 app.listen(app.get('port'),()=>{
     console.log("servidor iniciado en el puerto " + app.get('port'));
