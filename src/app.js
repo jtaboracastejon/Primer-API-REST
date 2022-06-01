@@ -14,6 +14,7 @@ app.use(express.json());
 app.use('/api',require('./rutas'));
 app.use('/api/cargos',require('./rutas/rutasCargos'));
 app.use('/api/empleados',require('./rutas/rutasEmpleados'));
+app.use('/api/usuarios',require('./rutas/rutasUsuarios'));
 
 app.listen(app.get('port'),()=>{
     console.log("servidor iniciado en el puerto " + app.get('port'));
