@@ -3,6 +3,9 @@ const {body, query} = require('express-validator');
 
 const controladorCargos = require('../controladores/controladorCargos');
 const rutas = Router();
+
+
+
 rutas.get('/listar', controladorCargos.Listar);
 
 

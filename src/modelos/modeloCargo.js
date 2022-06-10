@@ -25,4 +25,6 @@ const Cargo = db.define(
         timestamps: false
     }
 );
+
+
 module.exports = Cargo;
