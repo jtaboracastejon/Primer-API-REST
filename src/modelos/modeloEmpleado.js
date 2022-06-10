@@ -1,5 +1,6 @@
 const {DataTypes}=require('sequelize')
 const db = require('../configuraciones/db')
+const Cargo = require('../modelos/modeloCargo')
 
 const Empleado = db.define(
     'Empleado',
@@ -44,4 +45,12 @@ const Empleado = db.define(
         timestamps: false
     }
 );
+Cargo.hasMany(Empleado,{
+    foreignKey: 'cargo_id',
+    otherKey: 'id'
+});
+Empleado.belongsTo(Cargo,{
+    foreignKey: 'cargo_id',
+    otherKey: 'id'
+});
 module.exports = Empleado;
