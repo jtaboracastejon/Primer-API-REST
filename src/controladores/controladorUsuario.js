@@ -1,5 +1,4 @@
 const {validationResult} = require('express-validator');
-const { pin } = require('nodemon/lib/version');
 const modeloUsuario = require('../modelos/modeloUsuario');
 
 exports.Listar = async(req, res) => {
@@ -88,11 +87,34 @@ exports.Editar = async (req, res) => {
                 where: {
                     id: id
                 }
-            });      
+            });
+            
+            var uniqueLogin = await modeloUsuario.findOne({
+                where: {
+                    LoginUsuario: login
+                }
+            });
+            var uniqueMail = await modeloUsuario.findOne({
+                where: {
+                    correo: correo
+                }
+            })
+            var uniqueEmpleado = await modeloUsuario.findOne({
+                where: {
+                    empleado: id_empleado
+                }
+            })
+            
             if(!buscarUsuario){
                 msj.mensaje = 'No se ha encontrado un usuario con el ID ' + id;
-            }
-            else{
+            }else if(uniqueLogin && buscarUsuario.LoginUsuario != login){
+                msj.mensaje = 'ERROR: El login ya existe'; 
+            }else if(uniqueMail && buscarUsuario.correo != correo){
+                msj.mensaje = 'ERROR: El correo ya existe';
+            }else if(uniqueEmpleado && buscarUsuario.empleado != id_empleado){
+                msj.mensaje = 'ERROR: El id Empleado ya esta asignado a otro usuario';
+
+            }else{
                 buscarUsuario.LoginUsuario = login;
                 buscarUsuario.empleado = id_empleado;
                 buscarUsuario.contrasena = contrasena;
