@@ -1,8 +1,9 @@
 const express = require('express');
 const morgan = require('morgan');
 const path = require('path');
+require('dotenv').config();
+//Ojo antes de iniciar el server
 const app = express();
-
 app.set('port',3001);
 app.use(morgan('dev'));
 app.use(express.urlencoded({extended:false}));

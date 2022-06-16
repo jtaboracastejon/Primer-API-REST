@@ -1,7 +1,7 @@
 const {validationResult} = require('express-validator');
 const MSJ = require('../componentes/mensajes')
 const Usuario = require('../modelos/modeloUsuario');
-const Correo = require('../configuraciones/correo');
+const EnviarCorreo = require('../configuraciones/correo');
 
 function validar(req){
     const validaciones = validationResult(req);
@@ -41,14 +41,31 @@ exports.RecuperarContrasena = async (req, res) => {
                     correo: correo,
                 }
             })
-            if(buscarUsuario){
+            if(!buscarUsuario){         
+
+                msj.estado = 'error';
+                msj.mensaje = 'No se encontro un usuario con ese correo';
+                msj.errores = {
+                    mensaje: 'No se encontro un usuario con ese correo',
+                    parametro: 'correo',
+                };
+                MSJ(res,500,msj)
+
+            }else{
                 const pin = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
                 buscarUsuario.pin = pin;
                 await buscarUsuario.save();
-                Correo.RecuperarContrasena(buscarUsuario);
+                const data = {
+                    correo: correo,
+                    pin: pin,
+                }
+                EnviarCorreo.RecuperarContrasena(data);
+                msj.estado = 'correcto';
+                msj.mensaje = 'La peticion fue ejecutada correctamente';
+                msj.errores = '';
+                MSJ(res,200,msj);
                 console.log(pin)
-
-            } 
+            }
         } catch (error) {
             msj.estado = 'error';
             msj.mensaje = 'La Peticion no se ejecuto';
@@ -56,5 +73,4 @@ exports.RecuperarContrasena = async (req, res) => {
             MSJ(res,500,error)
         }
     }
-    res.json(msj)
 } 
