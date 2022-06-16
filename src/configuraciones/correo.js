@@ -11,8 +11,8 @@ exports.RecuperarContrasena = async (data) => {
         port: 465,//Puerto del correo
         secure: true,//Si usa conexion ssl
         auth: {//Credenciales para autenticacion
-            user: 'jr_taborac@unicah.edu',//Correo electronico
-            pass: 'javiercastejon'//Contraseña
+            user: '',//Correo electronico
+            pass: ''//Contraseña
         }
     });
     await transporte.verify(async function (error, success) {/*Verifica si el servidor de correo esta disponible*/
