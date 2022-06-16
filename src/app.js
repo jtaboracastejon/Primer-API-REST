@@ -26,6 +26,7 @@ app.use('/api/empleados',require('./rutas/rutasEmpleados'));
 app.use('/api/usuarios',require('./rutas/rutasUsuarios'));
 
 app.use('/api/archivos',require('./rutas/rutasArchivos'));
+app.use('/api/autenticacion',require('./rutas/rutasAutenticacion'));
 
 app.listen(app.get('port'),()=>{
     console.log("servidor iniciado en el puerto " + app.get('port'));

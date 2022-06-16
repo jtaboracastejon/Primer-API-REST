@@ -1,0 +1,60 @@
+const {validationResult} = require('express-validator');
+const MSJ = require('../componentes/mensajes')
+const Usuario = require('../modelos/modeloUsuario');
+const Correo = require('../configuraciones/correo');
+
+function validar(req){
+    const validaciones = validationResult(req);
+    var errores = [];
+    var error = {
+        mensaje: '',
+        parametro: '',
+    }
+    var msj = {
+        estado: 'correcto',
+        mensaje: '',
+        datos: '',
+        errores: '',
+    };
+    if (validaciones.errors.length > 0) {
+        validaciones.errors.forEach(element => {
+            error.mensaje = element.msg
+            error.parametro = element.param
+            errores.push(error)
+        });
+        msj.estado = 'precaucion';
+        msj.mensaje = 'La Peticion no se ejecuto';
+        msj.errores = errores;
+    }
+    return msj;
+}
+
+exports.RecuperarContrasena = async (req, res) => {
+    const msj = validar(req);
+    if(msj.errores.length > 0){
+        MSJ(res,200,msj);
+    }else{
+        try {
+            const {correo} = req.body;
+            const buscarUsuario = await Usuario.findOne({
+                where: {
+                    correo: correo,
+                }
+            })
+            if(buscarUsuario){
+                const pin = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
+                buscarUsuario.pin = pin;
+                await buscarUsuario.save();
+                Correo.RecuperarContrasena(buscarUsuario);
+                console.log(pin)
+
+            } 
+        } catch (error) {
+            msj.estado = 'error';
+            msj.mensaje = 'La Peticion no se ejecuto';
+            msj.errores = error;
+            MSJ(res,500,error)
+        }
+    }
+    res.json(msj)
+} 
