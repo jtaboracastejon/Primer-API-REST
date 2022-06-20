@@ -3,6 +3,8 @@ const MSJ = require('../componentes/mensajes')
 const Usuario = require('../modelos/modeloUsuario');
 const EnviarCorreo = require('../configuraciones/correo');
 
+const {Op} = require('sequelize');
+
 function validar(req){
     const validaciones = validationResult(req);
     var errores = [];
@@ -74,3 +76,56 @@ exports.RecuperarContrasena = async (req, res) => {
         }
     }
 } 
+
+exports.IniciarSesion = async (req, res) => {
+    const msj = validar(req);
+    if(msj.errores.length > 0){
+        MSJ(res,200,msj);
+    }else{
+        try {
+            const {usuario} = req.body;
+            const buscarUsuario = await Usuario.findOne({
+                where: {
+                    [Op.or]:[
+                        {correo: usuario},
+                        {LoginUsuario: usuario}
+                    ],
+                    [Op.and]: {
+                        Habilitado: true,
+                        estado: 'AC'
+                    }
+                }
+            })
+            if(!buscarUsuario){         
+
+                msj.estado = 'error';
+                msj.mensaje = 'No se encontro un usuario con ese correo';
+                msj.errores = {
+                    mensaje: 'No se encontro un usuario con ese correo',
+                    parametro: 'correo',
+                };
+                MSJ(res,500,msj)
+
+            }else{
+                const pin = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
+                buscarUsuario.pin = pin;
+                await buscarUsuario.save();
+                const data = {
+                    correo: correo,
+                    pin: pin,
+                }
+                EnviarCorreo.RecuperarContrasena(data);
+                msj.estado = 'correcto';
+                msj.mensaje = 'La peticion fue ejecutada correctamente';
+                msj.errores = '';
+                MSJ(res,200,msj);
+                console.log(pin)
+            }
+        } catch (error) {
+            msj.estado = 'error';
+            msj.mensaje = 'La Peticion no se ejecuto';
+            msj.errores = error;
+            MSJ(res,500,error)
+        }
+    }
+}

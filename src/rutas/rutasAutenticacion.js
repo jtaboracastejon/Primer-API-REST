@@ -10,4 +10,9 @@ body ('correo')
 .isEmail().withMessage('El correo electronico debe ser valido'),
 controladorAutenticacion.RecuperarContrasena);
 
+rutas.post('/iniciarsesiion',
+body ('usuario')
+.notEmpty().withMessage('Debe enviar el usuario electronico'),
+controladorAutenticacion.IniciarSesion)
+
 module.exports = rutas;
