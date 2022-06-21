@@ -2,6 +2,7 @@ const {validationResult} = require('express-validator');
 const MSJ = require('../componentes/mensajes')
 const Usuario = require('../modelos/modeloUsuario');
 const EnviarCorreo = require('../configuraciones/correo');
+const gpc = require('generate-pincode')
 
 const {Op} = require('sequelize');
 
@@ -54,7 +55,7 @@ exports.RecuperarContrasena = async (req, res) => {
                 MSJ(res,500,msj)
 
             }else{
-                const pin = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
+                const pin = gpc(4);
                 buscarUsuario.pin = pin;
                 await buscarUsuario.save();
                 const data = {
